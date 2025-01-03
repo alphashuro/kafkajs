@@ -214,7 +214,8 @@ module.exports = class Cluster {
    * @return {Promise}
    */
   async addMultipleTargetTopics(topics) {
-    if (this.targetTopics.isSupersetOf(new Set(topics))) {
+    const noNewTopics = topics.every(topic => this.targetTopics.has(topic))
+    if (noNewTopics) {
       return
     }
 
