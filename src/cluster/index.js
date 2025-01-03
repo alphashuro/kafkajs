@@ -214,6 +214,10 @@ module.exports = class Cluster {
    * @return {Promise}
    */
   async addMultipleTargetTopics(topics) {
+    if (this.targetTopics.isSupersetOf(new Set(topics))) {
+      return
+    }
+
     await this.mutatingTargetTopics.acquire()
 
     try {

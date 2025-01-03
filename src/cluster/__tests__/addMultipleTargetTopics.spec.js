@@ -42,4 +42,15 @@ describe('Cluster > addMultipleTargetTopics', () => {
     await cluster.addMultipleTargetTopics([topic1])
     expect(cluster.refreshMetadata).toHaveBeenCalledTimes(2)
   })
+
+  test('does not try to acquire lock if there are no new target topics', async () => {
+    cluster.mutatingTargetTopics.acquire = jest.fn()
+    const topic1 = `topic-${secureRandom()}`
+    const topic2 = `topic-${secureRandom()}`
+
+    await cluster.addMultipleTargetTopics([topic1, topic2])
+    await cluster.addMultipleTargetTopics([topic1])
+
+    expect(cluster.mutatingTargetTopics.acquire).toHaveBeenCalledTimes(1)
+  })
 })
